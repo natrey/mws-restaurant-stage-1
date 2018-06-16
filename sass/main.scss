@@ -1,7 +1,17 @@
-@import './helpers/_variables.scss';
+@charset "utf-8";
 
-body{
-  background: $primary-color;
-  color: $primary-color;
-  font-size: 17px;
-}
+@import 'variables/colors';
+@import 'variables/breakpoints';
+
+@import './layout/html';
+@import './layout/header';
+@import './layout/footer';
+
+@import './components/nav';
+@import './components/breadcrumbs';
+@import './components/map-container';
+@import './components/map';
+@import './components/filter-options';
+@import './components/restaurants-list';
+@import './components/restaurant';
+@import './components/reviews';

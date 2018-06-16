@@ -3,15 +3,17 @@
 const gulp = require('gulp');
 const sass = require('gulp-sass');
 const del = require('del');
+const rename = require('gulp-rename');
 
 gulp.task('clean', function(cb) {
-  return del(['styles'], cb);
+  return del(['css'], cb);
 });
 
 gulp.task('sass', function () {
-  return gulp.src('./sass/**/*.scss')
+  return gulp.src('./sass/*.scss')
     .pipe(sass().on('error', sass.logError))
-    .pipe(gulp.dest('./styles'));
+    .pipe(rename({ basename: 'styles' }))
+    .pipe(gulp.dest('./css'));
 });
 
 gulp.task('watch', function () {

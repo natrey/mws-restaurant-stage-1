@@ -1,0 +1,12 @@
+/* ====================== Map ====================== */
+
+.map {
+  height: 400px;
+  width: 100%;
+  background-color: #ccc;
+  &_fixed {
+    background-color: #ccc;
+    height: 100%;
+    width: 100%;
+  }
+}
