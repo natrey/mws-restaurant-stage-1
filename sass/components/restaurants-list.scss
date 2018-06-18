@@ -1,6 +1,6 @@
 /* ====================== Restaurant Listing ====================== */
 
-#restaurants-list {
+.restaurants-list {
   background-color: #f3f3f3;
   list-style: outside none none;
   margin: 0;
@@ -47,7 +47,7 @@
     font-size: 11pt;
   }
 
-  .restaurant-img {
+  &__img {
     background-color: #ccc;
     display: block;
     margin: 0;
