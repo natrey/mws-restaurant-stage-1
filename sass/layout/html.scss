@@ -1,41 +1,75 @@
-body,td,th,p{
-  font-family: Arial, Helvetica, sans-serif;
-  font-size: 10pt;
-  color: #333;
-  line-height: 1.5;
+* {
+  box-sizing: border-box;  
 }
 
-
 body {
-  background-color: #fdfdfd;
+  font-family: $mainFont;
+  font-size: 14px;
+  color: $darkGrey;
+  line-height: 1.5;
   margin: 0;
   position:relative;
 }
 
-ul, li {
-  font-family: Arial, Helvetica, sans-serif;
-  font-size: 10pt;
-  color: #333;
+ul {
+  list-style: none;
+  margin: 0;
+  padding: 0;
 }
 
 a {
-  color: orange;
+  color: $orange;
   text-decoration: none;
-}
-a:hover, a:focus {
-  color: #3397db;
-  text-decoration: none;
-}
-a img{
-  border: none 0 #fff;
+  transition: color .3s, background .3s;
 }
 
-h1, h2, h3, h4, h5, h6 {
-  font-family: Arial, Helvetica, sans-serif;
+a:hover, a:focus {
+  color: $lightBlue;
+  text-decoration: none;
+}
+
+img {
+  max-width: 100%;
+}
+
+h1, 
+h2, 
+h3, 
+h4, 
+h5, 
+h6 {
   margin: 0 0 20px;
+  font-weight: 300;
+  text-transform: uppercase;
+  letter-spacing: .1em;
+  line-height: 1.3em;
+}
+
+h1 {
+  font-size: 19px;
+}
+
+h2 {
+  font-size: 16px;
+  font-weight: 400;
+}
+
+h3 {
+  font-weight: 500;
 }
   
-article, aside, canvas, details, figcaption, figure, footer, header, hgroup, menu, nav, section {
+article, 
+aside, 
+canvas, 
+details, 
+figcaption, 
+figure, 
+footer, 
+header, 
+hgroup, 
+menu, 
+nav, 
+section {
   display: block;
 }
 
@@ -48,8 +82,16 @@ footer {
   background-color: #444;
   color: #aaa;
   font-size: 8pt;
-  letter-spacing: 1px;
+  letter-spacing: .1em;
   padding: 25px;
   text-align: center;
   text-transform: uppercase;
+}
+
+select {
+  border: none;
+  height: 35px;
+  font-size: 14px;
+  font-family: $mainFont;
+  padding: 0 10px;
 }

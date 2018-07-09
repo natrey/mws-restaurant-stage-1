@@ -1,22 +1,21 @@
 .restaurant {  
   border-bottom: 1px solid #d9d9d9;
   border-top: 1px solid #fff;
-  padding: 140px 40px 30px;
+  padding: 120px 20px 30px;
   width: 50%;  
   
   &__name {
-    color: #f18200;
-    font-family: Arial,sans-serif;
+    color: $orange;
     font-size: 20pt;
     font-weight: 200;
-    letter-spacing: 0;
-    margin: 15px 0 30px;
+    margin: 30px 0 15px;
     text-transform: uppercase;
     line-height: 1.1;
   }
   
   &__img {
-    width: 90%;
+    display: block;
+    border-top-left-radius: 35px;
   }
   
   &__address {
@@ -25,21 +24,21 @@
   }
   
   &__cuisine {
-    background-color: #333;
+    background-color: $darkGrey;
     color: #ddd;
     font-size: 12pt;
     font-weight: 300;
-    letter-spacing: 10px;
+    letter-spacing: 0.5em;
+    line-height: 2em;
     margin: 0 0 20px;
-    padding: 2px 0;
     text-align: center;
     text-transform: uppercase;
-    width: 90%;
+    border-bottom-right-radius: 35px;
   }
   
   &__hours {
     td {
-      color: #666;
+      color: $grey;
     }
   }
 }

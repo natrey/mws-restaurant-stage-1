@@ -3,9 +3,9 @@
 .map {
   height: 400px;
   width: 100%;
-  background-color: #ccc;
+  background-color: $lightGrey;
   &_fixed {
-    background-color: #ccc;
+    background-color: $lightGrey;
     height: 100%;
     width: 100%;
   }

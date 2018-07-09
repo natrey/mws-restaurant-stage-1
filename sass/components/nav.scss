@@ -1,20 +1,18 @@
 /* ====================== Navigation ====================== */
 
 nav {
-  width: 100%;
-  height: 80px;
-  background-color: #252831;
-  text-align:center;
+  padding: 25px 0;
+  background-color: $darkGrey;
+  text-align: center;
   
   h1 {
-    margin: auto;
+    margin: 0;
+    color: #fff;
+    font-size: 14pt;
+    letter-spacing: .6em;
     
     a {
       color: #fff;
-      font-size: 14pt;
-      font-weight: 200;
-      letter-spacing: 10px;
-      text-transform: uppercase;
     }
   }
 }

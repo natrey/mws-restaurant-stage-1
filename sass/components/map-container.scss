@@ -1,11 +1,11 @@
 .map-container {
   
   &_fixed {
-    background: blue none repeat scroll 0 0;
-    height: 87%;
+    background: $blue none repeat scroll 0 0;
+    height: calc(100vh - 77px);
     position: fixed;
     right: 0;
-    top: 80px;
+    top: 77px;
     width: 50%;
   }  
 }
