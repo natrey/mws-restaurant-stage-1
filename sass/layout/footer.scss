@@ -1,5 +1,9 @@
 .footer_fixed {
   bottom: 0;
   position: absolute;
-  width: 50%;
+  width: 100%;
+
+  @media (min-width: $tablet-portrait) {
+    width: 50%;
+  }
 }

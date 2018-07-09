@@ -3,7 +3,10 @@
     border-bottom: 1px solid #d9d9d9;
     border-top: 1px solid #fff;
     padding: 30px 20px 80px;
-    width: 50%;
+
+    @media (min-width: $tablet-portrait) {
+      width: 50%;
+    }
     
     h2 {
       color: $orange;
@@ -31,6 +34,40 @@
       p {
         margin: 0 0 10px;
       }
+    }
+  }
+
+  &-item {
+    &__rating {
+      display: inline-block;
+      background: $orange;
+      color: #fff;
+      border-radius: 2px;
+      padding: 3px 10px 2px;
+      margin-bottom: 15px;
+      text-transform: uppercase;
+      font-weight: 500;
+      letter-spacing: .1em;
+    }
+
+    &__header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background: $darkGrey;
+      color: #fff;
+      margin: 0 -20px 15px;
+      padding: 10px 20px;
+      border-top-left-radius: 35px;
+    }
+
+    &__name {
+      font-size: 18px;
+    }
+
+    &__date {
+      color: $lightGrey;
+      text-shadow: 1px 1px 0 rgba(0, 0, 0, 1);
     }
   }
 }

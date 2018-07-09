@@ -3,7 +3,10 @@
 .breadcrumb {
   padding: 13px 20px 15px;
   background-color: #eee;
-  width: 50%;
+
+  @media (min-width: $tablet-portrait) {
+    width: 50%;
+  }
   
   li {
     display: inline;

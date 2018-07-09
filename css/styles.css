@@ -7,7 +7,8 @@ body {
   color: #333;
   line-height: 1.5;
   margin: 0;
-  position: relative; }
+  position: relative;
+  min-width: 320px; }
 
 ul {
   list-style: none;
@@ -82,16 +83,20 @@ select {
   font-family: Roboto, Arial, Helvetica, sans-serif;
   padding: 0 10px; }
 
-.header_fixed {
-  position: fixed;
-  top: 0;
-  width: 100%;
-  z-index: 1000; }
+@media (min-width: 768px) {
+  .header_fixed {
+    position: fixed;
+    top: 0;
+    width: 100%;
+    z-index: 1000; } }
 
 .footer_fixed {
   bottom: 0;
   position: absolute;
-  width: 50%; }
+  width: 100%; }
+  @media (min-width: 768px) {
+    .footer_fixed {
+      width: 50%; } }
 
 /* ====================== Navigation ====================== */
 nav {
@@ -109,8 +114,10 @@ nav {
 /* ====================== Breadcrumbs ====================== */
 .breadcrumb {
   padding: 13px 20px 15px;
-  background-color: #eee;
-  width: 50%; }
+  background-color: #eee; }
+  @media (min-width: 768px) {
+    .breadcrumb {
+      width: 50%; } }
   .breadcrumb li {
     display: inline; }
     .breadcrumb li + li:before {
@@ -124,11 +131,14 @@ nav {
 
 .map-container_fixed {
   background: #01447e none repeat scroll 0 0;
-  height: calc(100vh - 77px);
-  position: fixed;
-  right: 0;
-  top: 77px;
-  width: 50%; }
+  height: 300px; }
+  @media (min-width: 768px) {
+    .map-container_fixed {
+      height: calc(100vh - 74px);
+      position: fixed;
+      right: 0;
+      top: 74px;
+      width: 50%; } }
 
 /* ====================== Map ====================== */
 .map {
@@ -217,9 +227,12 @@ nav {
 
 .restaurant {
   border-bottom: 1px solid #d9d9d9;
-  border-top: 1px solid #fff;
-  padding: 120px 20px 30px;
-  width: 50%; }
+  padding: 0 20px 30px; }
+  @media (min-width: 768px) {
+    .restaurant {
+      width: 50%;
+      padding-top: 120px;
+      border-top: 1px solid #fff; } }
   .restaurant__name {
     color: #f18200;
     font-size: 20pt;
@@ -250,8 +263,10 @@ nav {
 .reviews__container {
   border-bottom: 1px solid #d9d9d9;
   border-top: 1px solid #fff;
-  padding: 30px 20px 80px;
-  width: 50%; }
+  padding: 30px 20px 80px; }
+  @media (min-width: 768px) {
+    .reviews__container {
+      width: 50%; } }
   .reviews__container h2 {
     color: #f18200;
     font-size: 24pt;
@@ -273,3 +288,31 @@ nav {
     border-radius: 35px 0 35px 0; }
     .reviews__list li p {
       margin: 0 0 10px; }
+
+.reviews-item__rating {
+  display: inline-block;
+  background: #f18200;
+  color: #fff;
+  border-radius: 2px;
+  padding: 3px 10px 2px;
+  margin-bottom: 15px;
+  text-transform: uppercase;
+  font-weight: 500;
+  letter-spacing: .1em; }
+
+.reviews-item__header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: #333;
+  color: #fff;
+  margin: 0 -20px 15px;
+  padding: 10px 20px;
+  border-top-left-radius: 35px; }
+
+.reviews-item__name {
+  font-size: 18px; }
+
+.reviews-item__date {
+  color: #ccc;
+  text-shadow: 1px 1px 0 black; }

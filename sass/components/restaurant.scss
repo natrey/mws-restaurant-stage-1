@@ -1,8 +1,12 @@
 .restaurant {  
   border-bottom: 1px solid #d9d9d9;
-  border-top: 1px solid #fff;
-  padding: 120px 20px 30px;
-  width: 50%;  
+  padding: 0 20px 30px;
+
+  @media (min-width: $tablet-portrait) {
+    width: 50%;
+    padding-top: 120px;
+    border-top: 1px solid #fff;
+  }
   
   &__name {
     color: $orange;
