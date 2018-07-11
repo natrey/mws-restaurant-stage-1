@@ -1,6 +1,8 @@
 let restaurant;
 var map;
 
+const IMAGE_SIZES = require('./constants.js').imageSizes;
+
 /**
  * Initialize Google map, called from HTML.
  */
@@ -57,6 +59,14 @@ fillRestaurantHTML = (restaurant = self.restaurant) => {
 
   const image = document.querySelector('.restaurant__img');
   image.src = DBHelper.imageUrlForRestaurant(restaurant);
+  image.alt = restaurant.alt;  
+  
+  const imageWidth = (restaurant.photograph_small).match(/(?<=_).*(?=\.)/);
+  image.srcset = DBHelper.adaptiveImageForRestaurant(restaurant) + ` ${imageWidth}`;
+  image.sizes = IMAGE_SIZES;
+
+  const source = document.querySelector('.restaurant source');
+  source.srcset = DBHelper.imageUrlForRestaurant(restaurant);    
 
   const cuisine = document.querySelector('.restaurant__cuisine');
   cuisine.innerHTML = restaurant.cuisine_type;

@@ -4,6 +4,8 @@ let restaurants,
 var map;
 var markers = [];
 
+const IMAGE_SIZES = require('./constants.js').imageSizes;
+
 /**
  * Fetch neighborhoods and cuisines as soon as the page is loaded.
  */
@@ -145,7 +147,15 @@ createRestaurantHTML = (restaurant) => {
   const image = document.createElement('img');
   image.className = 'restaurants-list__img';
   image.src = DBHelper.imageUrlForRestaurant(restaurant);
-  thumb.append(image);
+  image.alt = restaurant.alt;
+
+  const imageWidth = (restaurant.photograph_small).match(/(?<=_).*(?=\.)/);
+  image.srcset = DBHelper.adaptiveImageForRestaurant(restaurant) + ` ${imageWidth}`;
+  image.sizes = IMAGE_SIZES;  
+  
+  const picture = document.createElement('picture');
+  picture.append(image);
+  thumb.append(picture);
 
   const name = document.createElement('h3');
   name.className = 'restaurants-list__title';
