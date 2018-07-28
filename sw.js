@@ -11,6 +11,10 @@ self.addEventListener('install', event => {
     caches.open(CONTENT_STATIC_CACHE).then(cache => {
       return cache.addAll([
         '/',
+        '/restaurant.html',
+        'dist/css/styles.css',
+        'dist/js/main.bundle.js',
+        'dist/js/restaurant.bundle.js',
         'https://fonts.googleapis.com/css?family=Roboto:300,400,500,700',
       ]);
     })
