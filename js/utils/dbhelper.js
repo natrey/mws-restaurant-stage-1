@@ -1,3 +1,5 @@
+import idb from 'idb';
+
 /**
  * Common database helper functions.
  */
@@ -13,6 +15,21 @@ export default class DBHelper {
   }
 
   /**
+   * Open Database
+   */
+  static openDatabase() {
+    if (!navigator.serviceWorker) {
+      return Promise.resolve();
+    }
+
+    return idb.open('app', 1, function(upgradeDb) {
+      const store = upgradeDb.createObjectStore('apps', {
+        keyPath: 'id'
+      });
+    });
+  }
+
+  /**
    * Fetch all restaurants.
    */
   static fetchRestaurants(callback) {
@@ -22,6 +39,17 @@ export default class DBHelper {
       if (xhr.status === 200) { // Got a success response from server!
         const json = JSON.parse(xhr.responseText);
         const restaurants = json.restaurants;
+
+        this.openDatabase().then(function(db) {
+          if (!db) return;
+
+          const tx = db.transaction('apps', 'readwrite');
+          const store = tx.objectStore('apps');
+          restaurants.forEach(function(restaurant) {
+            store.put(restaurant);
+          });
+        });
+
         callback(null, restaurants);
       } else { // Oops!. Got an error from server.
         const error = (`Request failed. Returned status of ${xhr.status}`);
