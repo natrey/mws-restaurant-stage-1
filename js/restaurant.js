@@ -6,6 +6,23 @@ import DBHelper from './utils/dbhelper';
 import { IMAGE_SIZES } from './utils/constants';
 
 /**
+ * Service worker registration
+ */
+const registerServiceWorker = () => {
+  if (!navigator.serviceWorker) return;
+
+  navigator.serviceWorker.register('sw.js').then(reg => {
+    console.log('Registration worked!');
+  }).catch(err => {
+    console.log('Registration failed!');
+  });
+};
+
+document.addEventListener('DOMContentLoaded', (event) => {
+  registerServiceWorker();
+});
+
+/**
  * Initialize Google map, called from HTML.
  */
 window.initMap = () => {
