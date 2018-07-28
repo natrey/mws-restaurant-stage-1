@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 	<head>
   	<link rel="stylesheet" src="//normalize-css.googlecode.com/svn/trunk/normalize.css" />
   	<link rel="stylesheet" href="dist/css/styles.css">
@@ -8,16 +8,16 @@
 	</head>
 	<body>
   	<header>
-    	<nav>
+    	<nav role="banner">
       	<h1>Restaurant Reviews</h1>
     	</nav>
   	</header>
-  	<main>
+  	<main role="main">
     	<section class="map-container">
       	<div class="map"></div>
     	</section>
     	<section>
-      	<div class="filter-options">
+      	<div class="filter-options" role="form">
         	<h2>Filter Results</h2>
         	<select id="neighborhoods-select" name="neighborhoods" onchange="updateRestaurants()">
           	<option value="all">All Neighborhoods</option>
@@ -29,7 +29,7 @@
       	<ul class="restaurants-list"></ul>
     	</section>
   	</main>
-		<footer>
+		<footer role="contentinfo">
 			Copyright (c) 2017 <a href="/"><strong>Restaurant Reviews</strong></a> All Rights Reserved.
 		</footer>
   	<script src="dist/js/main.bundle.js"></script>
