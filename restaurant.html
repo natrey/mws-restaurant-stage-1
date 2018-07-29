@@ -11,13 +11,16 @@
 			<nav role="banner">
 				<h1><a href="/">Restaurant Reviews</a></h1>
 			</nav>
-			<ul class="breadcrumb" role="navigation">
-				<li><a href="/">Home</a></li>
-			</ul>
+			<nav class="breadcrumb" aria-label="Breadcrumb" role="navigation">
+				<ul>
+					<li><a href="/">Home</a></li>
+				</ul>
+			</nav>
+
 		</header>
   	<main role="main">
     	<section class="map-container map-container_fixed">
-      	<div class="map map_fixed"></div>
+      	<div class="map map_fixed" role="application"></div>
     	</section>
     	<section class="restaurant">
       	<h1 class="restaurant__name"></h1>      	

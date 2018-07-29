@@ -195,7 +195,7 @@ var createReviewHTML = function createReviewHTML(review) {
 var fillBreadcrumb = function fillBreadcrumb() {
   var restaurant = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : self.restaurant;
 
-  var breadcrumb = document.querySelector('.breadcrumb');
+  var breadcrumb = document.querySelector('.breadcrumb ul');
   var li = document.createElement('li');
   li.innerHTML = restaurant.name;
   breadcrumb.appendChild(li);

@@ -177,7 +177,7 @@ const createReviewHTML = (review) => {
  * Add restaurant name to the breadcrumb navigation menu
  */
 const fillBreadcrumb = (restaurant=self.restaurant) => {
-  const breadcrumb = document.querySelector('.breadcrumb');
+  const breadcrumb = document.querySelector('.breadcrumb ul');
   const li = document.createElement('li');
   li.innerHTML = restaurant.name;
   breadcrumb.appendChild(li);
