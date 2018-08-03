@@ -301,32 +301,24 @@ var DBHelper = function () {
   }, {
     key: 'fetchRestaurants',
     value: function fetchRestaurants(callback) {
-      var xhr = new XMLHttpRequest();
-      xhr.open('GET', DBHelper.DATABASE_URL);
-      xhr.onload = function () {
-        if (xhr.status === 200) {
-          // Got a success response from server!
-          var json = JSON.parse(xhr.responseText);
-          var restaurants = json.restaurants;
+      fetch(DBHelper.DATABASE_URL).then(function (res) {
+        return res.json();
+      }).then(function (restaurants) {
+        DBHelper.openDatabase().then(function (db) {
+          if (!db) return;
 
-          DBHelper.openDatabase().then(function (db) {
-            if (!db) return;
-
-            var tx = db.transaction('apps', 'readwrite');
-            var store = tx.objectStore('apps');
-            restaurants.forEach(function (restaurant) {
-              store.put(restaurant);
-            });
+          var tx = db.transaction('apps', 'readwrite');
+          var store = tx.objectStore('apps');
+          restaurants.forEach(function (restaurant) {
+            store.put(restaurant);
           });
+        });
 
-          callback(null, restaurants);
-        } else {
-          // Oops!. Got an error from server.
-          var error = 'Request failed. Returned status of ' + xhr.status;
-          callback(error, null);
-        }
-      };
-      xhr.send();
+        return callback(null, restaurants);
+      }).catch(function (error) {
+        var errorMsg = 'Request failed. Returned status of ' + error;
+        return callback(errorMsg, null);
+      });
     }
 
     /**
@@ -410,6 +402,7 @@ var DBHelper = function () {
           callback(error, null);
         } else {
           var results = restaurants;
+
           if (cuisine != 'all') {
             // filter by cuisine
             results = results.filter(function (r) {
@@ -494,12 +487,12 @@ var DBHelper = function () {
   }, {
     key: 'imageUrlForRestaurant',
     value: function imageUrlForRestaurant(restaurant) {
-      return '/img/' + restaurant.photograph;
+      return '/img/' + restaurant.photograph + '.jpg';
     }
   }, {
     key: 'adaptiveImageForRestaurant',
     value: function adaptiveImageForRestaurant(restaurant) {
-      return '/img/' + restaurant.photograph_small;
+      return '/img/' + restaurant.photograph + '_500w.jpg';
     }
 
     /**
@@ -526,8 +519,8 @@ var DBHelper = function () {
      * Change this to restaurants.json file location on your server.
      */
     get: function get() {
-      var port = 8000; // Change this to your server port
-      return 'http://localhost:' + port + '/data/restaurants.json';
+      var port = 1337; // Change this to your server port
+      return 'http://localhost:' + port + '/restaurants';
     }
   }]);
 

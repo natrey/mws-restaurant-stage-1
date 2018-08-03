@@ -168,7 +168,7 @@ const createRestaurantHTML = (restaurant) => {
   image.src = DBHelper.imageUrlForRestaurant(restaurant);
   image.alt = restaurant.alt;
 
-  const imageWidth = (restaurant.photograph_small).match(/(?<=_).*(?=\.)/);
+  const imageWidth = '500w';
   image.srcset = DBHelper.adaptiveImageForRestaurant(restaurant) + ` ${imageWidth}`;
   image.sizes = IMAGE_SIZES;  
   
