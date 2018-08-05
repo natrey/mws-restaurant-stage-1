@@ -78,10 +78,9 @@ const fillRestaurantHTML = (restaurant = self.restaurant) => {
 
   const image = document.querySelector('.restaurant__img');
   image.src = DBHelper.imageUrlForRestaurant(restaurant);
-  image.alt = restaurant.alt;  
-  
-  const imageWidth = (restaurant.photograph_small).match(/(?<=_).*(?=\.)/);
-  image.srcset = DBHelper.adaptiveImageForRestaurant(restaurant) + ` ${imageWidth}`;
+  image.alt = restaurant.alt;
+
+  image.srcset = DBHelper.adaptiveImageForRestaurant(restaurant) + ` 500w`;
   image.sizes = IMAGE_SIZES;
 
   const source = document.querySelector('.restaurant source');
