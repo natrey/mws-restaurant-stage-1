@@ -184,7 +184,7 @@ var createRestaurantHTML = function createRestaurantHTML(restaurant) {
   var image = document.createElement('img');
   image.className = 'restaurants-list__img';
   image.src = _dbhelper2.default.imageUrlForRestaurant(restaurant);
-  image.alt = restaurant.alt;
+  image.alt = 'Interior design of ' + restaurant.name + ' Restaurant.';
 
   var imageWidth = '500w';
   image.srcset = _dbhelper2.default.adaptiveImageForRestaurant(restaurant) + (' ' + imageWidth);

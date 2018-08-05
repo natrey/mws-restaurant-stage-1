@@ -78,7 +78,7 @@ const fillRestaurantHTML = (restaurant = self.restaurant) => {
 
   const image = document.querySelector('.restaurant__img');
   image.src = DBHelper.imageUrlForRestaurant(restaurant);
-  image.alt = restaurant.alt;
+  image.alt = `Interior design of ${restaurant.name} Restaurant.`;
 
   image.srcset = DBHelper.adaptiveImageForRestaurant(restaurant) + ` 500w`;
   image.sizes = IMAGE_SIZES;

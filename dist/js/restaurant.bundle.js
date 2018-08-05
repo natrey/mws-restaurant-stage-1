@@ -90,7 +90,7 @@ var fillRestaurantHTML = function fillRestaurantHTML() {
 
   var image = document.querySelector('.restaurant__img');
   image.src = _dbhelper2.default.imageUrlForRestaurant(restaurant);
-  image.alt = restaurant.alt;
+  image.alt = 'Interior design of ' + restaurant.name + ' Restaurant.';
 
   image.srcset = _dbhelper2.default.adaptiveImageForRestaurant(restaurant) + ' 500w';
   image.sizes = _constants.IMAGE_SIZES;
