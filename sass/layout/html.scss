@@ -81,12 +81,17 @@ main {
 
 footer {
   background-color: #444;
-  color: #aaa;
+  color: #fff;
   font-size: 8pt;
   letter-spacing: .1em;
   padding: 25px;
   text-align: center;
   text-transform: uppercase;
+
+  a {
+    color: #fff;
+    text-decoration: underline;
+  }
 }
 
 select {
