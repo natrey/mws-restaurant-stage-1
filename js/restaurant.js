@@ -3,7 +3,7 @@ var map;
 
 import DBHelper from './utils/dbhelper';
 
-import { IMAGE_SIZES } from './utils/constants';
+import { IMAGE } from './utils/constants';
 
 /**
  * Service worker registration
@@ -54,7 +54,7 @@ const fetchRestaurantFromURL = (callback) => {
     error = 'No restaurant id in URL';
     callback(error, null);
   } else {
-    DBHelper.fetchRestaurantById(id, (error, restaurant) => {
+    DBHelper.getRestaurantById(id, (error, restaurant) => {
       self.restaurant = restaurant;
       if (!restaurant) {
         console.error(error);
@@ -80,8 +80,8 @@ const fillRestaurantHTML = (restaurant = self.restaurant) => {
   image.src = DBHelper.imageUrlForRestaurant(restaurant);
   image.alt = `Interior design of ${restaurant.name} Restaurant.`;
 
-  image.srcset = DBHelper.adaptiveImageForRestaurant(restaurant) + ` 500w`;
-  image.sizes = IMAGE_SIZES;
+  image.srcset = DBHelper.adaptiveImageForRestaurant(restaurant) + ` ${IMAGE.SMALL_WIDTH}`;
+  image.sizes = IMAGE.SIZES;
 
   const source = document.querySelector('.restaurant source');
   source.srcset = DBHelper.imageUrlForRestaurant(restaurant);    

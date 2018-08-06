@@ -64,7 +64,7 @@ var fetchRestaurantFromURL = function fetchRestaurantFromURL(callback) {
     error = 'No restaurant id in URL';
     callback(error, null);
   } else {
-    _dbhelper2.default.fetchRestaurantById(id, function (error, restaurant) {
+    _dbhelper2.default.getRestaurantById(id, function (error, restaurant) {
       self.restaurant = restaurant;
       if (!restaurant) {
         console.error(error);
@@ -92,8 +92,8 @@ var fillRestaurantHTML = function fillRestaurantHTML() {
   image.src = _dbhelper2.default.imageUrlForRestaurant(restaurant);
   image.alt = 'Interior design of ' + restaurant.name + ' Restaurant.';
 
-  image.srcset = _dbhelper2.default.adaptiveImageForRestaurant(restaurant) + ' 500w';
-  image.sizes = _constants.IMAGE_SIZES;
+  image.srcset = _dbhelper2.default.adaptiveImageForRestaurant(restaurant) + (' ' + _constants.IMAGE.SMALL_WIDTH);
+  image.sizes = _constants.IMAGE.SIZES;
 
   var source = document.querySelector('.restaurant source');
   source.srcset = _dbhelper2.default.imageUrlForRestaurant(restaurant);
@@ -219,7 +219,16 @@ var getParameterByName = function getParameterByName(name, url) {
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-var IMAGE_SIZES = exports.IMAGE_SIZES = '100vw';
+var IMAGE = exports.IMAGE = {
+  SIZES: '100vw',
+  SMALL_WIDTH: '500w'
+};
+
+var DATABASE = exports.DATABASE = {
+  NAME: 'restaurant-reviews-app',
+  VERSION: 1,
+  TABLE: 'restaurants'
+};
 
 },{}],3:[function(require,module,exports){
 'use strict';
@@ -233,6 +242,8 @@ var _createClass = function () { function defineProperties(target, props) { for 
 var _idb = require('idb');
 
 var _idb2 = _interopRequireDefault(_idb);
+
+var _constants = require('./constants');
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -258,9 +269,43 @@ var DBHelper = function () {
         return Promise.resolve();
       }
 
-      return _idb2.default.open('app', 1, function (upgradeDb) {
-        var store = upgradeDb.createObjectStore('apps', {
+      return _idb2.default.open(_constants.DATABASE.NAME, _constants.DATABASE.VERSION, function (upgradeDb) {
+        var store = upgradeDb.createObjectStore(_constants.DATABASE.TABLE, {
           keyPath: 'id'
+        });
+      });
+    }
+
+    /**
+     * Get cached restaurants
+     */
+
+  }, {
+    key: 'getCachedRestaurants',
+    value: function getCachedRestaurants() {
+      return DBHelper.openDatabase().then(function (db) {
+        if (!db) return;
+
+        var index = db.transaction(_constants.DATABASE.TABLE).objectStore(_constants.DATABASE.TABLE);
+
+        return index.getAll();
+      });
+    }
+
+    /**
+     * Put cached restaurants
+     */
+
+  }, {
+    key: 'putCachedRestaurants',
+    value: function putCachedRestaurants(restaurants) {
+      return DBHelper.openDatabase().then(function (db) {
+        if (!db) return;
+
+        var tx = db.transaction(_constants.DATABASE.TABLE, 'readwrite');
+        var store = tx.objectStore(_constants.DATABASE.TABLE);
+        restaurants.forEach(function (restaurant) {
+          store.put(restaurant);
         });
       });
     }
@@ -278,18 +323,47 @@ var DBHelper = function () {
     }
 
     /**
-     * Get cached restaurants
+     * Get cached restaurant
      */
 
   }, {
-    key: 'getCachedRestaurants',
-    value: function getCachedRestaurants() {
+    key: 'getCachedRestaurant',
+    value: function getCachedRestaurant(id) {
       return DBHelper.openDatabase().then(function (db) {
         if (!db) return;
 
-        var index = db.transaction('apps').objectStore('apps');
+        var index = db.transaction(_constants.DATABASE.TABLE).objectStore(_constants.DATABASE.TABLE);
 
-        return index.getAll();
+        return index.get(+id);
+      });
+    }
+
+    /**
+     * Put cached restaurant
+     */
+
+  }, {
+    key: 'putCachedRestaurant',
+    value: function putCachedRestaurant(restaurant) {
+      return DBHelper.openDatabase().then(function (db) {
+        if (!db) return;
+
+        var tx = db.transaction(_constants.DATABASE.TABLE, 'readwrite');
+        var store = tx.objectStore(_constants.DATABASE.TABLE);
+
+        store.put(restaurant);
+      });
+    }
+
+    /**
+     * Get restaurant
+     */
+
+  }, {
+    key: 'getRestaurantById',
+    value: function getRestaurantById(id, callback) {
+      return DBHelper.getCachedRestaurant(id).then(function (restaurant) {
+        return !!restaurant ? callback(null, restaurant) : DBHelper.fetchRestaurantById(id, callback);
       });
     }
 
@@ -300,18 +374,12 @@ var DBHelper = function () {
   }, {
     key: 'fetchRestaurants',
     value: function fetchRestaurants(callback) {
+      var _this = this;
+
       fetch(DBHelper.DATABASE_URL).then(function (res) {
         return res.json();
       }).then(function (restaurants) {
-        DBHelper.openDatabase().then(function (db) {
-          if (!db) return;
-
-          var tx = db.transaction('apps', 'readwrite');
-          var store = tx.objectStore('apps');
-          restaurants.forEach(function (restaurant) {
-            store.put(restaurant);
-          });
-        });
+        _this.putCachedRestaurants(restaurants);
 
         return callback(null, restaurants);
       }).catch(function (error) {
@@ -327,17 +395,12 @@ var DBHelper = function () {
   }, {
     key: 'fetchRestaurantById',
     value: function fetchRestaurantById(id, callback) {
+      var _this2 = this;
+
       fetch(DBHelper.DATABASE_URL + '/' + id).then(function (res) {
         return res.json();
       }).then(function (restaurant) {
-        // DBHelper.openDatabase().then(function(db) {
-        //   if (!db) return;
-        //
-        //   const tx = db.transaction('restaurant', 'readwrite');
-        //   const store = tx.objectStore('restaurant');
-        //   store.put(restaurant);
-        //
-        // });
+        _this2.putCachedRestaurant(restaurant);
 
         return callback(null, restaurant);
       }).catch(function (error) {
@@ -491,7 +554,7 @@ var DBHelper = function () {
   }, {
     key: 'adaptiveImageForRestaurant',
     value: function adaptiveImageForRestaurant(restaurant) {
-      return '/img/' + restaurant.photograph + '_500w.jpg';
+      return '/img/' + restaurant.photograph + '_' + _constants.IMAGE.SMALL_WIDTH + '.jpg';
     }
 
     /**
@@ -518,7 +581,7 @@ var DBHelper = function () {
      * Change this to restaurants.json file location on your server.
      */
     get: function get() {
-      var port = 1337; // Change this to your server port
+      var port = 1337;
 
       return 'http://localhost:' + port + '/restaurants';
     }
@@ -529,7 +592,7 @@ var DBHelper = function () {
 
 exports.default = DBHelper;
 
-},{"idb":4}],4:[function(require,module,exports){
+},{"./constants":2,"idb":4}],4:[function(require,module,exports){
 'use strict';
 
 (function() {

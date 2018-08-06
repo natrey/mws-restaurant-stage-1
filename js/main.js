@@ -6,7 +6,7 @@ var markers = [];
 
 import DBHelper from './utils/dbhelper';
 
-import { IMAGE_SIZES } from './utils/constants';
+import { IMAGE } from './utils/constants';
 
 /**
  * Service worker registration
@@ -168,9 +168,8 @@ const createRestaurantHTML = (restaurant) => {
   image.src = DBHelper.imageUrlForRestaurant(restaurant);
   image.alt = `Interior design of ${restaurant.name} Restaurant.`;
 
-  const imageWidth = '500w';
-  image.srcset = DBHelper.adaptiveImageForRestaurant(restaurant) + ` ${imageWidth}`;
-  image.sizes = IMAGE_SIZES;  
+  image.srcset = DBHelper.adaptiveImageForRestaurant(restaurant) + ` ${IMAGE.SMALL_WIDTH}`;
+  image.sizes = IMAGE.SIZES;
   
   const picture = document.createElement('picture');
   picture.append(image);

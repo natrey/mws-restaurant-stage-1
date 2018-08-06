@@ -1,5 +1,7 @@
 import idb from 'idb';
 
+import { DATABASE, IMAGE } from "./constants";
+
 /**
  * Common database helper functions.
  */
@@ -10,7 +12,7 @@ export default class DBHelper {
    * Change this to restaurants.json file location on your server.
    */
   static get DATABASE_URL() {
-    const port = 1337; // Change this to your server port
+    const port = 1337;
 
     return `http://localhost:${port}/restaurants`;
   }
@@ -23,9 +25,38 @@ export default class DBHelper {
       return Promise.resolve();
     }
 
-    return idb.open('app', 1, function(upgradeDb) {
-      const store = upgradeDb.createObjectStore('apps', {
+    return idb.open(DATABASE.NAME, DATABASE.VERSION, function(upgradeDb) {
+      const store = upgradeDb.createObjectStore(DATABASE.TABLE, {
         keyPath: 'id'
+      });
+    });
+  }
+
+  /**
+   * Get cached restaurants
+   */
+  static getCachedRestaurants() {
+    return DBHelper.openDatabase().then(function(db) {
+      if (!db) return;
+
+      const index = db.transaction(DATABASE.TABLE)
+        .objectStore(DATABASE.TABLE);
+
+      return index.getAll();
+    });
+  }
+
+  /**
+   * Put cached restaurants
+   */
+  static putCachedRestaurants(restaurants) {
+    return DBHelper.openDatabase().then(function(db) {
+      if (!db) return;
+
+      const tx = db.transaction(DATABASE.TABLE, 'readwrite');
+      const store = tx.objectStore(DATABASE.TABLE);
+      restaurants.forEach(function(restaurant) {
+        store.put(restaurant);
       });
     });
   }
@@ -42,16 +73,41 @@ export default class DBHelper {
   }
 
   /**
-   * Get cached restaurants
+   * Get cached restaurant
    */
-  static getCachedRestaurants() {
+  static getCachedRestaurant(id) {
     return DBHelper.openDatabase().then(function(db) {
       if (!db) return;
 
-      var index = db.transaction('apps')
-        .objectStore('apps');
+      const index = db.transaction(DATABASE.TABLE)
+        .objectStore(DATABASE.TABLE);
 
-      return index.getAll();
+      return index.get(+id);
+    });
+  }
+
+  /**
+   * Put cached restaurant
+   */
+  static putCachedRestaurant(restaurant) {
+    return DBHelper.openDatabase().then(function(db) {
+      if (!db) return;
+
+      const tx = db.transaction(DATABASE.TABLE, 'readwrite');
+      const store = tx.objectStore(DATABASE.TABLE);
+
+      store.put(restaurant);
+    });
+  }
+
+  /**
+   * Get restaurant
+   */
+  static getRestaurantById(id, callback) {
+    return DBHelper.getCachedRestaurant(id).then(restaurant => {
+      return !!restaurant
+        ? callback(null, restaurant)
+        : DBHelper.fetchRestaurantById(id, callback);
     });
   }
 
@@ -62,15 +118,7 @@ export default class DBHelper {
     fetch(DBHelper.DATABASE_URL)
       .then(res => res.json())
       .then(restaurants => {
-        DBHelper.openDatabase().then(function(db) {
-          if (!db) return;
-
-          const tx = db.transaction('apps', 'readwrite');
-          const store = tx.objectStore('apps');
-          restaurants.forEach(function(restaurant) {
-            store.put(restaurant);
-          });
-        });
+        this.putCachedRestaurants(restaurants);
 
         return callback(null, restaurants);
       })
@@ -87,14 +135,7 @@ export default class DBHelper {
     fetch(`${DBHelper.DATABASE_URL}/${id}`)
       .then(res => res.json())
       .then(restaurant => {
-        // DBHelper.openDatabase().then(function(db) {
-        //   if (!db) return;
-        //
-        //   const tx = db.transaction('restaurant', 'readwrite');
-        //   const store = tx.objectStore('restaurant');
-        //   store.put(restaurant);
-        //
-        // });
+        this.putCachedRestaurant(restaurant);
 
         return callback(null, restaurant);
       })
@@ -170,7 +211,7 @@ export default class DBHelper {
         // Get all neighborhoods from all restaurants
         const neighborhoods = restaurants.map((v, i) => restaurants[i].neighborhood);
         // Remove duplicates from neighborhoods
-        const uniqueNeighborhoods = neighborhoods.filter((v, i) => neighborhoods.indexOf(v) == i)
+        const uniqueNeighborhoods = neighborhoods.filter((v, i) => neighborhoods.indexOf(v) == i);
         callback(null, uniqueNeighborhoods);
       }
     });
@@ -209,7 +250,7 @@ export default class DBHelper {
   }
   
   static adaptiveImageForRestaurant(restaurant) {
-    return (`/img/${restaurant.photograph}_500w.jpg`);
+    return (`/img/${restaurant.photograph}_${IMAGE.SMALL_WIDTH}.jpg`);
   }
 
   /**
