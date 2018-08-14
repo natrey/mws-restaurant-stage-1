@@ -8,20 +8,20 @@
   margin: 20px 10px 0;
   padding-bottom: 20px;
   text-align: center;
-  
+
   &__title {
     color: $orange;
     font-size: 16px;
     margin: 20px 0 10px;
     letter-spacing: 0;
   }
-  
-  li {    
+
+  li {
     padding: 0 10px 20px;
-    
+
     @media (min-width: $tablet-portrait) {
       width: 50%;
-    }    
+    }
     @media (min-width: $tablet-landscape) {
       width: 33.3333%;
     }
@@ -29,33 +29,39 @@
       width: 25%;
     }
   }
-  
+
   &__thumb {
     background-color: #fff;
     border: 2px solid $lightGrey;
     min-height: 380px;
     padding: 0 30px 25px;
     text-align: left;
-    
+
     a {
+      display: block;
+      flex: 1;
       background: $orange;
       border-bottom: 3px solid #eee;
       color: #fff;
-      display: block;
       font-size: 10pt;
       margin: 15px 0 0;
       padding: 8px 30px 10px;
       text-align: center;
       text-decoration: none;
       text-transform: uppercase;
-      
+
       @media (min-width: $tablet-portrait) {
         display: inline-block;
       }
-      
+
       &:hover {
         background: $lightBlue;
       }
+    }
+
+    picture {
+      display: block;
+      margin: 0 -30px;
     }
   }
 
@@ -71,5 +77,24 @@
     min-height: 248px;
     min-width: 100%;
     object-fit: cover;
+  }
+
+  &__action-panel {
+    display: flex;
+  }
+
+  &__favorite-button {
+    float: right;
+    width: 45px;
+    height: 45px;
+    margin: 10px -10px 0 20px;
+
+    background: url('../../icons/star.svg') center no-repeat;
+    background-size: 30px;
+
+    &_filled {
+      background: url('../../icons/star_filled.svg') center no-repeat;
+      background-size: 30px;
+    }
   }
 }

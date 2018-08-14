@@ -236,6 +236,43 @@ export default class DBHelper {
   }
 
   /**
+   * Fetch all favorite restaurants.
+   */
+  static fetchFavoriteRestaurants(callback) {
+    fetch(`${DBHelper.DATABASE_URL}/?is_favorite=true`)
+      .then(res => res.json())
+      .then(restaurants => {
+        console.log(restaurants);
+        // this.putCachedRestaurant(restaurant);
+
+        return callback(null, restaurants);
+      })
+      .catch(error => {
+        const errorMsg = (`Request failed. Returned status of ${error}`);
+        return callback(errorMsg, null);
+      });
+  }
+
+  /**
+   * Put favorite restaurant by id.
+   */
+  static putFavoriteRestaurant(restaurant, callback) {
+    fetch(`${DBHelper.DATABASE_URL}/${restaurant.id}/?is_favorite=${!restaurant.is_favorite}`, {
+      method: 'PUT'
+    })
+      .then(res => res.json())
+      .then(data => {
+        console.log(data);
+
+        return callback(null, data);
+      })
+      .catch(error => {
+        const errorMsg = (`Request failed. Returned status of ${error}`);
+        return callback(errorMsg, null);
+      });
+  }
+
+  /**
    * Restaurant page URL.
    */
   static urlForRestaurant(restaurant) {
@@ -248,7 +285,7 @@ export default class DBHelper {
   static imageUrlForRestaurant(restaurant) {
     return (`/img/${restaurant.photograph}.jpg`);
   }
-  
+
   static adaptiveImageForRestaurant(restaurant) {
     return (`/img/${restaurant.photograph}_${IMAGE.SMALL_WIDTH}.jpg`);
   }

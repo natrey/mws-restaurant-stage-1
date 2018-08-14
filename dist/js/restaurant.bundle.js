@@ -533,6 +533,47 @@ var DBHelper = function () {
     }
 
     /**
+     * Fetch all favorite restaurants.
+     */
+
+  }, {
+    key: 'fetchFavoriteRestaurants',
+    value: function fetchFavoriteRestaurants(callback) {
+      fetch(DBHelper.DATABASE_URL + '/?is_favorite=true').then(function (res) {
+        return res.json();
+      }).then(function (restaurants) {
+        console.log(restaurants);
+        // this.putCachedRestaurant(restaurant);
+
+        return callback(null, restaurants);
+      }).catch(function (error) {
+        var errorMsg = 'Request failed. Returned status of ' + error;
+        return callback(errorMsg, null);
+      });
+    }
+
+    /**
+     * Put favorite restaurant by id.
+     */
+
+  }, {
+    key: 'putFavoriteRestaurant',
+    value: function putFavoriteRestaurant(restaurant, callback) {
+      fetch(DBHelper.DATABASE_URL + '/' + restaurant.id + '/?is_favorite=' + !restaurant.is_favorite, {
+        method: 'PUT'
+      }).then(function (res) {
+        return res.json();
+      }).then(function (data) {
+        console.log(data);
+
+        return callback(null, data);
+      }).catch(function (error) {
+        var errorMsg = 'Request failed. Returned status of ' + error;
+        return callback(errorMsg, null);
+      });
+    }
+
+    /**
      * Restaurant page URL.
      */
 

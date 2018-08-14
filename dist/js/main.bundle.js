@@ -206,11 +206,24 @@ var createRestaurantHTML = function createRestaurantHTML(restaurant) {
   address.innerHTML = restaurant.address;
   thumb.append(address);
 
+  var actionPanel = document.createElement('div');
+  actionPanel.className = 'restaurants-list__action-panel';
+  thumb.append(actionPanel);
+
   var more = document.createElement('a');
   more.innerHTML = 'View Details';
   more.href = _dbhelper2.default.urlForRestaurant(restaurant);
   more.setAttribute('role', 'button');
-  thumb.append(more);
+  actionPanel.append(more);
+
+  var favoriteButton = document.createElement('button');
+  favoriteButton.setAttribute('aria-label', 'toggle favorite');
+  favoriteButton.className = 'restaurants-list__favorite-button';
+  favoriteButton.onclick = function () {
+    _dbhelper2.default.putFavoriteRestaurant(restaurant);
+    favoriteButton.classList.toggle('restaurants-list__favorite-button_filled');
+  };
+  actionPanel.append(favoriteButton);
 
   return li;
 };
@@ -547,6 +560,47 @@ var DBHelper = function () {
           });
           callback(null, uniqueCuisines);
         }
+      });
+    }
+
+    /**
+     * Fetch all favorite restaurants.
+     */
+
+  }, {
+    key: 'fetchFavoriteRestaurants',
+    value: function fetchFavoriteRestaurants(callback) {
+      fetch(DBHelper.DATABASE_URL + '/?is_favorite=true').then(function (res) {
+        return res.json();
+      }).then(function (restaurants) {
+        console.log(restaurants);
+        // this.putCachedRestaurant(restaurant);
+
+        return callback(null, restaurants);
+      }).catch(function (error) {
+        var errorMsg = 'Request failed. Returned status of ' + error;
+        return callback(errorMsg, null);
+      });
+    }
+
+    /**
+     * Put favorite restaurant by id.
+     */
+
+  }, {
+    key: 'putFavoriteRestaurant',
+    value: function putFavoriteRestaurant(restaurant, callback) {
+      fetch(DBHelper.DATABASE_URL + '/' + restaurant.id + '/?is_favorite=' + !restaurant.is_favorite, {
+        method: 'PUT'
+      }).then(function (res) {
+        return res.json();
+      }).then(function (data) {
+        console.log(data);
+
+        return callback(null, data);
+      }).catch(function (error) {
+        var errorMsg = 'Request failed. Returned status of ' + error;
+        return callback(errorMsg, null);
       });
     }
 

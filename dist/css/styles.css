@@ -86,6 +86,20 @@ select {
   font-family: Roboto, Arial, Helvetica, sans-serif;
   padding: 0 10px; }
 
+button {
+  border: none;
+  margin: 0;
+  padding: 0;
+  width: auto;
+  overflow: visible;
+  color: inherit;
+  font: inherit;
+  line-height: normal;
+  -webkit-font-smoothing: inherit;
+  -moz-osx-font-smoothing: inherit;
+  -webkit-appearance: none;
+  cursor: pointer; }
+
 @media (min-width: 768px) {
   .header_fixed {
     position: fixed;
@@ -204,10 +218,11 @@ nav {
     padding: 0 30px 25px;
     text-align: left; }
     .restaurants-list__thumb a {
+      display: block;
+      flex: 1;
       background: #b30000;
       border-bottom: 3px solid #eee;
       color: #fff;
-      display: block;
       font-size: 10pt;
       margin: 15px 0 0;
       padding: 8px 30px 10px;
@@ -219,6 +234,9 @@ nav {
           display: inline-block; } }
       .restaurants-list__thumb a:hover {
         background: #155B8E; }
+    .restaurants-list__thumb picture {
+      display: block;
+      margin: 0 -30px; }
   .restaurants-list p {
     margin: 0;
     font-size: 11pt; }
@@ -229,6 +247,18 @@ nav {
     min-height: 248px;
     min-width: 100%;
     object-fit: cover; }
+  .restaurants-list__action-panel {
+    display: flex; }
+  .restaurants-list__favorite-button {
+    float: right;
+    width: 45px;
+    height: 45px;
+    margin: 10px -10px 0 20px;
+    background: url("../../icons/star.svg") center no-repeat;
+    background-size: 30px; }
+    .restaurants-list__favorite-button_filled {
+      background: url("../../icons/star_filled.svg") center no-repeat;
+      background-size: 30px; }
 
 .restaurant {
   border-bottom: 1px solid #d9d9d9;

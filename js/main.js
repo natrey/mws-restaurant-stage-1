@@ -93,7 +93,7 @@ window.initMap = () => {
     lat: 40.722216,
     lng: -73.987501
   };
-  
+
   self.map = new google.maps.Map(document.querySelector('.map'), {
     zoom: 12,
     center: loc,
@@ -170,7 +170,7 @@ const createRestaurantHTML = (restaurant) => {
 
   image.srcset = DBHelper.adaptiveImageForRestaurant(restaurant) + ` ${IMAGE.SMALL_WIDTH}`;
   image.sizes = IMAGE.SIZES;
-  
+
   const picture = document.createElement('picture');
   picture.append(image);
   thumb.append(picture);
@@ -188,13 +188,26 @@ const createRestaurantHTML = (restaurant) => {
   address.innerHTML = restaurant.address;
   thumb.append(address);
 
+  const actionPanel = document.createElement('div');
+  actionPanel.className = 'restaurants-list__action-panel';
+  thumb.append(actionPanel);
+
   const more = document.createElement('a');
   more.innerHTML = 'View Details';
   more.href = DBHelper.urlForRestaurant(restaurant);
   more.setAttribute('role', 'button');
-  thumb.append(more);
+  actionPanel.append(more);
 
-  return li
+  const favoriteButton = document.createElement('button');
+  favoriteButton.setAttribute('aria-label', 'toggle favorite');
+  favoriteButton.className = 'restaurants-list__favorite-button';
+  favoriteButton.onclick = () => {
+    DBHelper.putFavoriteRestaurant(restaurant);
+    favoriteButton.classList.toggle('restaurants-list__favorite-button_filled');
+  };
+  actionPanel.append(favoriteButton);
+
+  return li;
 };
 
 /**
