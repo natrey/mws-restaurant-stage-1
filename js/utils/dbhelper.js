@@ -14,7 +14,7 @@ export default class DBHelper {
   static get DATABASE_URL() {
     const port = 1337;
 
-    return `http://localhost:${port}/restaurants`;
+    return `http://localhost:${port}`;
   }
 
   /**
@@ -117,7 +117,7 @@ export default class DBHelper {
    * Fetch all restaurants.
    */
   static fetchRestaurants(callback) {
-    fetch(DBHelper.DATABASE_URL)
+    fetch(`${DBHelper.DATABASE_URL}/restaurants`)
       .then(res => res.json())
       .then(restaurants => {
         this.putCachedRestaurants(restaurants);
@@ -134,7 +134,7 @@ export default class DBHelper {
    * Fetch a restaurant by its ID.
    */
   static fetchRestaurantById(id, callback) {
-    fetch(`${DBHelper.DATABASE_URL}/${id}`)
+    fetch(`${DBHelper.DATABASE_URL}/restaurants/${id}`)
       .then(res => res.json())
       .then(restaurant => {
         this.putCachedRestaurant(restaurant);
@@ -241,7 +241,7 @@ export default class DBHelper {
    * Fetch all favorite restaurants.
    */
   static fetchFavoriteRestaurants(callback) {
-    fetch(`${DBHelper.DATABASE_URL}/?is_favorite=true`)
+    fetch(`${DBHelper.DATABASE_URL}/restaurants/?is_favorite=true`)
       .then(res => res.json())
       .then(restaurants => {
         console.log(restaurants);
@@ -262,7 +262,7 @@ export default class DBHelper {
     return DBHelper.getRestaurantById(id, (error, restaurant) => {
       const isFavorite = restaurant.is_favorite === 'true';
 
-      fetch(`${DBHelper.DATABASE_URL}/${id}/?is_favorite=${!isFavorite}`, {
+      fetch(`${DBHelper.DATABASE_URL}/restaurants/${id}/?is_favorite=${!isFavorite}`, {
         method: 'PUT'
       })
         .then(res => res.json())
@@ -283,6 +283,22 @@ export default class DBHelper {
    */
   static urlForRestaurant(restaurant) {
     return (`./restaurant.html?id=${restaurant.id}`);
+  }
+
+  /**
+   * Fetch restaurant reviews.
+   */
+  static fetchRestaurantReviews(id, callback) {
+    return fetch(`${DBHelper.DATABASE_URL}/reviews/?restaurant_id=${id}`)
+      .then(res => res.json())
+      .then(reviews => {
+
+        return callback(null, reviews);
+      })
+      .catch(error => {
+        const errorMsg = (`Request failed. Returned status of ${error}`);
+        return callback(errorMsg, null);
+      });;
   }
 
   /**

@@ -84,7 +84,7 @@ const fillRestaurantHTML = (restaurant = self.restaurant) => {
   image.sizes = IMAGE.SIZES;
 
   const source = document.querySelector('.restaurant source');
-  source.srcset = DBHelper.imageUrlForRestaurant(restaurant);    
+  source.srcset = DBHelper.imageUrlForRestaurant(restaurant);
 
   const cuisine = document.querySelector('.restaurant__cuisine');
   cuisine.innerHTML = restaurant.cuisine_type;
@@ -120,23 +120,25 @@ const fillRestaurantHoursHTML = (operatingHours = self.restaurant.operating_hour
 /**
  * Create all reviews HTML and add them to the webpage.
  */
-const fillReviewsHTML = (reviews = self.restaurant.reviews) => {
-  const container = document.querySelector('.reviews__container');
-  const title = document.createElement('h2');
-  title.innerHTML = 'Reviews';
-  container.appendChild(title);
+const fillReviewsHTML = (restaurant = self.restaurant) => {
+  DBHelper.fetchRestaurantReviews(restaurant.id, (error, reviews) => {
+    const container = document.querySelector('.reviews__container');
+    const title = document.createElement('h2');
+    title.innerHTML = 'Reviews';
+    container.appendChild(title);
 
-  if (!reviews) {
-    const noReviews = document.createElement('p');
-    noReviews.innerHTML = 'No reviews yet!';
-    container.appendChild(noReviews);
-    return;
-  }
-  const ul = document.querySelector('.reviews__list');
-  reviews.forEach(review => {
-    ul.appendChild(createReviewHTML(review));
+    if (!reviews) {
+      const noReviews = document.createElement('p');
+      noReviews.innerHTML = 'No reviews yet!';
+      container.appendChild(noReviews);
+      return;
+    }
+    const ul = document.querySelector('.reviews__list');
+    reviews.forEach(review => {
+      ul.appendChild(createReviewHTML(review));
+    });
+    container.appendChild(ul);
   });
-  container.appendChild(ul);
 };
 
 /**
@@ -155,8 +157,11 @@ const createReviewHTML = (review) => {
   name.className = 'reviews-item__name';
   header.appendChild(name);
 
+  const dateObj = new Date(review.createdAt);
+  const formatedDate = `${dateObj.getDate()}.${dateObj.getMonth()}.${dateObj.getFullYear()}`;
+
   const date = document.createElement('div');
-  date.innerHTML = review.date;
+  date.innerHTML = formatedDate;
   date.className = 'reviews-item__date';
   header.appendChild(date);
 

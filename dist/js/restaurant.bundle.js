@@ -135,24 +135,26 @@ var fillRestaurantHoursHTML = function fillRestaurantHoursHTML() {
  * Create all reviews HTML and add them to the webpage.
  */
 var fillReviewsHTML = function fillReviewsHTML() {
-  var reviews = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : self.restaurant.reviews;
+  var restaurant = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : self.restaurant;
 
-  var container = document.querySelector('.reviews__container');
-  var title = document.createElement('h2');
-  title.innerHTML = 'Reviews';
-  container.appendChild(title);
+  _dbhelper2.default.fetchRestaurantReviews(restaurant.id, function (error, reviews) {
+    var container = document.querySelector('.reviews__container');
+    var title = document.createElement('h2');
+    title.innerHTML = 'Reviews';
+    container.appendChild(title);
 
-  if (!reviews) {
-    var noReviews = document.createElement('p');
-    noReviews.innerHTML = 'No reviews yet!';
-    container.appendChild(noReviews);
-    return;
-  }
-  var ul = document.querySelector('.reviews__list');
-  reviews.forEach(function (review) {
-    ul.appendChild(createReviewHTML(review));
+    if (!reviews) {
+      var noReviews = document.createElement('p');
+      noReviews.innerHTML = 'No reviews yet!';
+      container.appendChild(noReviews);
+      return;
+    }
+    var ul = document.querySelector('.reviews__list');
+    reviews.forEach(function (review) {
+      ul.appendChild(createReviewHTML(review));
+    });
+    container.appendChild(ul);
   });
-  container.appendChild(ul);
 };
 
 /**
@@ -171,8 +173,11 @@ var createReviewHTML = function createReviewHTML(review) {
   name.className = 'reviews-item__name';
   header.appendChild(name);
 
+  var dateObj = new Date(review.createdAt);
+  var formatedDate = dateObj.getDate() + '.' + dateObj.getMonth() + '.' + dateObj.getFullYear();
+
   var date = document.createElement('div');
-  date.innerHTML = review.date;
+  date.innerHTML = formatedDate;
   date.className = 'reviews-item__date';
   header.appendChild(date);
 
@@ -378,7 +383,7 @@ var DBHelper = function () {
     value: function fetchRestaurants(callback) {
       var _this = this;
 
-      fetch(DBHelper.DATABASE_URL).then(function (res) {
+      fetch(DBHelper.DATABASE_URL + '/restaurants').then(function (res) {
         return res.json();
       }).then(function (restaurants) {
         _this.putCachedRestaurants(restaurants);
@@ -399,7 +404,7 @@ var DBHelper = function () {
     value: function fetchRestaurantById(id, callback) {
       var _this2 = this;
 
-      fetch(DBHelper.DATABASE_URL + '/' + id).then(function (res) {
+      fetch(DBHelper.DATABASE_URL + '/restaurants/' + id).then(function (res) {
         return res.json();
       }).then(function (restaurant) {
         _this2.putCachedRestaurant(restaurant);
@@ -541,7 +546,7 @@ var DBHelper = function () {
   }, {
     key: 'fetchFavoriteRestaurants',
     value: function fetchFavoriteRestaurants(callback) {
-      fetch(DBHelper.DATABASE_URL + '/?is_favorite=true').then(function (res) {
+      fetch(DBHelper.DATABASE_URL + '/restaurants/?is_favorite=true').then(function (res) {
         return res.json();
       }).then(function (restaurants) {
         console.log(restaurants);
@@ -566,7 +571,7 @@ var DBHelper = function () {
       return DBHelper.getRestaurantById(id, function (error, restaurant) {
         var isFavorite = restaurant.is_favorite === 'true';
 
-        fetch(DBHelper.DATABASE_URL + '/' + id + '/?is_favorite=' + !isFavorite, {
+        fetch(DBHelper.DATABASE_URL + '/restaurants/' + id + '/?is_favorite=' + !isFavorite, {
           method: 'PUT'
         }).then(function (res) {
           return res.json();
@@ -589,6 +594,24 @@ var DBHelper = function () {
     key: 'urlForRestaurant',
     value: function urlForRestaurant(restaurant) {
       return './restaurant.html?id=' + restaurant.id;
+    }
+
+    /**
+     * Fetch restaurant reviews.
+     */
+
+  }, {
+    key: 'fetchRestaurantReviews',
+    value: function fetchRestaurantReviews(id, callback) {
+      return fetch(DBHelper.DATABASE_URL + '/reviews/?restaurant_id=' + id).then(function (res) {
+        return res.json();
+      }).then(function (reviews) {
+
+        return callback(null, reviews);
+      }).catch(function (error) {
+        var errorMsg = 'Request failed. Returned status of ' + error;
+        return callback(errorMsg, null);
+      });;
     }
 
     /**
@@ -632,7 +655,7 @@ var DBHelper = function () {
     get: function get() {
       var port = 1337;
 
-      return 'http://localhost:' + port + '/restaurants';
+      return 'http://localhost:' + port;
     }
   }]);
 
