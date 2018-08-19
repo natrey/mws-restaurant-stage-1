@@ -334,7 +334,7 @@ var DBHelper = function () {
 
         var index = db.transaction(_constants.DATABASE.TABLE).objectStore(_constants.DATABASE.TABLE);
 
-        return index.get(+id);
+        return index.get(id);
       });
     }
 
@@ -352,6 +352,8 @@ var DBHelper = function () {
         var store = tx.objectStore(_constants.DATABASE.TABLE);
 
         store.put(restaurant);
+
+        return tx.complete;
       });
     }
 
@@ -545,7 +547,7 @@ var DBHelper = function () {
         console.log(restaurants);
         // this.putCachedRestaurant(restaurant);
 
-        return callback(null, restaurants);
+        // return callback(null, restaurants);
       }).catch(function (error) {
         var errorMsg = 'Request failed. Returned status of ' + error;
         return callback(errorMsg, null);
@@ -558,18 +560,24 @@ var DBHelper = function () {
 
   }, {
     key: 'putFavoriteRestaurant',
-    value: function putFavoriteRestaurant(restaurant, callback) {
-      fetch(DBHelper.DATABASE_URL + '/' + restaurant.id + '/?is_favorite=' + !restaurant.is_favorite, {
-        method: 'PUT'
-      }).then(function (res) {
-        return res.json();
-      }).then(function (data) {
-        console.log(data);
+    value: function putFavoriteRestaurant(id, callback) {
+      var _this3 = this;
 
-        return callback(null, data);
-      }).catch(function (error) {
-        var errorMsg = 'Request failed. Returned status of ' + error;
-        return callback(errorMsg, null);
+      return DBHelper.getRestaurantById(id, function (error, restaurant) {
+        var isFavorite = restaurant.is_favorite === 'true';
+
+        fetch(DBHelper.DATABASE_URL + '/' + id + '/?is_favorite=' + !isFavorite, {
+          method: 'PUT'
+        }).then(function (res) {
+          return res.json();
+        }).then(function (restaurant) {
+          _this3.putCachedRestaurant(restaurant);
+
+          return callback(null, restaurant);
+        }).catch(function (error) {
+          var errorMsg = 'Request failed. Returned status of ' + error;
+          return callback(errorMsg, null);
+        });
       });
     }
 

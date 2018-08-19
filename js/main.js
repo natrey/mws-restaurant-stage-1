@@ -201,11 +201,22 @@ const createRestaurantHTML = (restaurant) => {
   const favoriteButton = document.createElement('button');
   favoriteButton.setAttribute('aria-label', 'toggle favorite');
   favoriteButton.className = 'restaurants-list__favorite-button';
-  favoriteButton.onclick = () => {
-    DBHelper.putFavoriteRestaurant(restaurant);
-    favoriteButton.classList.toggle('restaurants-list__favorite-button_filled');
-  };
+
+  if (restaurant.is_favorite === 'true') {
+    favoriteButton.classList.add('restaurants-list__favorite-button_filled');
+  }
+
   actionPanel.append(favoriteButton);
+
+  favoriteButton.onclick = () => {
+    DBHelper.putFavoriteRestaurant(restaurant.id, (error, restaurant) => {
+      if (error) { // Got an error!
+        console.error(error);
+      } else {
+        favoriteButton.classList.toggle('restaurants-list__favorite-button_filled');
+      }
+    });
+  };
 
   return li;
 };

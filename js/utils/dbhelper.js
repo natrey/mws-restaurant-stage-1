@@ -82,7 +82,7 @@ export default class DBHelper {
       const index = db.transaction(DATABASE.TABLE)
         .objectStore(DATABASE.TABLE);
 
-      return index.get(+id);
+      return index.get(id);
     });
   }
 
@@ -97,6 +97,8 @@ export default class DBHelper {
       const store = tx.objectStore(DATABASE.TABLE);
 
       store.put(restaurant);
+
+      return tx.complete;
     });
   }
 
@@ -245,7 +247,7 @@ export default class DBHelper {
         console.log(restaurants);
         // this.putCachedRestaurant(restaurant);
 
-        return callback(null, restaurants);
+        // return callback(null, restaurants);
       })
       .catch(error => {
         const errorMsg = (`Request failed. Returned status of ${error}`);
@@ -256,20 +258,24 @@ export default class DBHelper {
   /**
    * Put favorite restaurant by id.
    */
-  static putFavoriteRestaurant(restaurant, callback) {
-    fetch(`${DBHelper.DATABASE_URL}/${restaurant.id}/?is_favorite=${!restaurant.is_favorite}`, {
-      method: 'PUT'
-    })
-      .then(res => res.json())
-      .then(data => {
-        console.log(data);
+  static putFavoriteRestaurant(id, callback) {
+    return DBHelper.getRestaurantById(id, (error, restaurant) => {
+      const isFavorite = restaurant.is_favorite === 'true';
 
-        return callback(null, data);
+      fetch(`${DBHelper.DATABASE_URL}/${id}/?is_favorite=${!isFavorite}`, {
+        method: 'PUT'
       })
-      .catch(error => {
-        const errorMsg = (`Request failed. Returned status of ${error}`);
-        return callback(errorMsg, null);
-      });
+        .then(res => res.json())
+        .then(restaurant => {
+          this.putCachedRestaurant(restaurant);
+
+          return callback(null, restaurant);
+        })
+        .catch(error => {
+          const errorMsg = (`Request failed. Returned status of ${error}`);
+          return callback(errorMsg, null);
+        });
+    });
   }
 
   /**
