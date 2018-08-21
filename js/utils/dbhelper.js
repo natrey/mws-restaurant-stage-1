@@ -302,6 +302,26 @@ export default class DBHelper {
   }
 
   /**
+   * Add a restaurant review.
+   */
+  static postRestaurantReview(data, callback) {
+    return fetch(`${DBHelper.DATABASE_URL}/reviews`, {
+      method: 'POST',
+      body: JSON.stringify(data)
+    })
+      .then(res => res.json())
+      .then(review => {
+
+        return callback(null, review);
+      })
+      .catch(error => {
+        const errorMsg = (`Request failed. Returned status of ${error}`);
+        return callback(errorMsg, null);
+      });
+  }
+
+
+  /**
    * Restaurant image URL.
    */
   static imageUrlForRestaurant(restaurant) {

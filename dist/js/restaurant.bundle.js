@@ -202,10 +202,21 @@ document.querySelector('.add-review-form').addEventListener('submit', function (
   e.preventDefault();
   var formElements = e.target.elements;
 
-  var author = formElements.namedItem('author').value;
-  var rating = formElements.namedItem('rating').value;
-  var comments = formElements.namedItem('comments').value;
-  console.log(author, rating, comments);
+  var formData = {
+    restaurant_id: self.restaurant.id,
+    name: formElements.namedItem('author').value,
+    rating: formElements.namedItem('rating').value,
+    comments: formElements.namedItem('comments').value
+  };
+
+  _dbhelper2.default.postRestaurantReview(formData, function (error, review) {
+    if (error) {
+      // Got an error!
+      console.error(error);
+    } else {
+      console.log(review);
+    }
+  });
 });
 
 /**
@@ -623,6 +634,27 @@ var DBHelper = function () {
       }).then(function (reviews) {
 
         return callback(null, reviews);
+      }).catch(function (error) {
+        var errorMsg = 'Request failed. Returned status of ' + error;
+        return callback(errorMsg, null);
+      });
+    }
+
+    /**
+     * Add a restaurant review.
+     */
+
+  }, {
+    key: 'postRestaurantReview',
+    value: function postRestaurantReview(data, callback) {
+      return fetch(DBHelper.DATABASE_URL + '/reviews', {
+        method: 'POST',
+        body: JSON.stringify(data)
+      }).then(function (res) {
+        return res.json();
+      }).then(function (review) {
+
+        return callback(null, review);
       }).catch(function (error) {
         var errorMsg = 'Request failed. Returned status of ' + error;
         return callback(errorMsg, null);

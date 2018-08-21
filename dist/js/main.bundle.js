@@ -653,6 +653,27 @@ var DBHelper = function () {
     }
 
     /**
+     * Add a restaurant review.
+     */
+
+  }, {
+    key: 'postRestaurantReview',
+    value: function postRestaurantReview(data, callback) {
+      return fetch(DBHelper.DATABASE_URL + '/reviews', {
+        method: 'POST',
+        body: JSON.stringify(data)
+      }).then(function (res) {
+        return res.json();
+      }).then(function (review) {
+
+        return callback(null, review);
+      }).catch(function (error) {
+        var errorMsg = 'Request failed. Returned status of ' + error;
+        return callback(errorMsg, null);
+      });
+    }
+
+    /**
      * Restaurant image URL.
      */
 

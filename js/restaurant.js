@@ -186,10 +186,20 @@ document.querySelector('.add-review-form').addEventListener('submit', e => {
   e.preventDefault();
   const formElements = e.target.elements;
 
-  const author = formElements.namedItem('author').value;
-  const rating = formElements.namedItem('rating').value;
-  const comments = formElements.namedItem('comments').value;
-  console.log(author, rating, comments);
+  const formData = {
+    restaurant_id: self.restaurant.id,
+    name: formElements.namedItem('author').value,
+    rating: formElements.namedItem('rating').value,
+    comments: formElements.namedItem('comments').value
+  };
+
+  DBHelper.postRestaurantReview(formData, (error, review) => {
+    if (error) { // Got an error!
+      console.error(error);
+    } else {
+      console.log(review);
+    }
+  });
 });
 
 /**
