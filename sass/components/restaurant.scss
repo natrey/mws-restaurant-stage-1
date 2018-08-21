@@ -1,4 +1,4 @@
-.restaurant {  
+.restaurant {
   border-bottom: 1px solid #d9d9d9;
   padding: 0 20px 30px;
 
@@ -7,26 +7,26 @@
     padding-top: 120px;
     border-top: 1px solid #fff;
   }
-  
+
   &__name {
     color: $orange;
-    font-size: 20pt;
+    font-size: 22pt;
     font-weight: 200;
     margin: 30px 0 15px;
     text-transform: uppercase;
     line-height: 1.1;
   }
-  
+
   &__img {
     display: block;
     border-top-left-radius: 35px;
   }
-  
+
   &__address {
     font-size: 12pt;
     margin: 10px 0;
   }
-  
+
   &__cuisine {
     background-color: $darkGrey;
     color: #ddd;
@@ -39,7 +39,7 @@
     text-transform: uppercase;
     border-bottom-right-radius: 35px;
   }
-  
+
   &__hours {
     td {
       color: $grey;

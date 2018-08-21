@@ -123,21 +123,22 @@ const fillRestaurantHoursHTML = (operatingHours = self.restaurant.operating_hour
 const fillReviewsHTML = (restaurant = self.restaurant) => {
   DBHelper.fetchRestaurantReviews(restaurant.id, (error, reviews) => {
     const container = document.querySelector('.reviews__container');
+    const formContainer = document.querySelector('.add-review');
     const title = document.createElement('h2');
     title.innerHTML = 'Reviews';
-    container.appendChild(title);
+    container.insertBefore(title, formContainer);
 
     if (!reviews) {
       const noReviews = document.createElement('p');
       noReviews.innerHTML = 'No reviews yet!';
-      container.appendChild(noReviews);
+      container.insertBefore(noReviews, formContainer);
       return;
     }
     const ul = document.querySelector('.reviews__list');
     reviews.forEach(review => {
-      ul.appendChild(createReviewHTML(review));
+      ul.append(createReviewHTML(review));
     });
-    container.appendChild(ul);
+    container.insertBefore(ul, formContainer);
   });
 };
 
@@ -176,6 +177,20 @@ const createReviewHTML = (review) => {
 
   return li;
 };
+
+/**
+ * Add new review
+ */
+
+document.querySelector('.add-review-form').addEventListener('submit', e => {
+  e.preventDefault();
+  const formElements = e.target.elements;
+
+  const author = formElements.namedItem('author').value;
+  const rating = formElements.namedItem('rating').value;
+  const comments = formElements.namedItem('comments').value;
+  console.log(author, rating, comments);
+});
 
 /**
  * Add restaurant name to the breadcrumb navigation menu

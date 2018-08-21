@@ -298,7 +298,7 @@ export default class DBHelper {
       .catch(error => {
         const errorMsg = (`Request failed. Returned status of ${error}`);
         return callback(errorMsg, null);
-      });;
+      });
   }
 
   /**

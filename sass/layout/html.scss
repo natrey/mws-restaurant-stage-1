@@ -94,12 +94,18 @@ footer {
   }
 }
 
-select {
+select,
+input,
+textarea {
   border: none;
   height: 35px;
   font-size: 14px;
   font-family: $mainFont;
-  padding: 0 10px;
+  padding: 7px 10px;
+}
+
+textarea {
+  height: 160px;
 }
 
 button {

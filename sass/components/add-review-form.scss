@@ -1,0 +1,36 @@
+.add-review-form {
+  &__field {
+    margin-bottom: 15px;
+  }
+
+  &__label {
+    display: block;
+    margin-bottom: 5px;
+  }
+
+  &__element {
+    width: 100%;
+  }
+
+  &__button {
+    display: block;
+    width: 100%;
+    background: $orange;
+    border-bottom: 3px solid #eee;
+    color: #fff;
+    font-size: 10pt;
+    margin: 0 0 30px;
+    padding: 8px 30px 10px;
+    text-align: center;
+    text-decoration: none;
+    text-transform: uppercase;
+
+    @media (min-width: $tablet-portrait) {
+      display: inline-block;
+    }
+
+    &:hover {
+      background: $lightBlue;
+    }
+  }
+}

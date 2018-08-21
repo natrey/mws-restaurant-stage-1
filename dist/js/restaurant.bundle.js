@@ -139,21 +139,22 @@ var fillReviewsHTML = function fillReviewsHTML() {
 
   _dbhelper2.default.fetchRestaurantReviews(restaurant.id, function (error, reviews) {
     var container = document.querySelector('.reviews__container');
+    var formContainer = document.querySelector('.add-review');
     var title = document.createElement('h2');
     title.innerHTML = 'Reviews';
-    container.appendChild(title);
+    container.insertBefore(title, formContainer);
 
     if (!reviews) {
       var noReviews = document.createElement('p');
       noReviews.innerHTML = 'No reviews yet!';
-      container.appendChild(noReviews);
+      container.insertBefore(noReviews, formContainer);
       return;
     }
     var ul = document.querySelector('.reviews__list');
     reviews.forEach(function (review) {
-      ul.appendChild(createReviewHTML(review));
+      ul.append(createReviewHTML(review));
     });
-    container.appendChild(ul);
+    container.insertBefore(ul, formContainer);
   });
 };
 
@@ -192,6 +193,20 @@ var createReviewHTML = function createReviewHTML(review) {
 
   return li;
 };
+
+/**
+ * Add new review
+ */
+
+document.querySelector('.add-review-form').addEventListener('submit', function (e) {
+  e.preventDefault();
+  var formElements = e.target.elements;
+
+  var author = formElements.namedItem('author').value;
+  var rating = formElements.namedItem('rating').value;
+  var comments = formElements.namedItem('comments').value;
+  console.log(author, rating, comments);
+});
 
 /**
  * Add restaurant name to the breadcrumb navigation menu
@@ -611,7 +626,7 @@ var DBHelper = function () {
       }).catch(function (error) {
         var errorMsg = 'Request failed. Returned status of ' + error;
         return callback(errorMsg, null);
-      });;
+      });
     }
 
     /**

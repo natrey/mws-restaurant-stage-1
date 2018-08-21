@@ -7,21 +7,20 @@
     @media (min-width: $tablet-portrait) {
       width: 50%;
     }
-    
+
     h2 {
       color: $orange;
-      font-size: 24pt;
+      font-size: 20pt;
       font-weight: 300;
       letter-spacing: -1px;
       line-height: 1;
       margin-bottom: 15px;
     }
   }
-  
+
   &__list {
-    margin: 0;
-    padding: 0;
-    
+    margin-bottom: 40px;
+
     li {
       background-color: #fff;
       border: 2px solid #f3f3f3;
@@ -30,7 +29,7 @@
       padding: 0 20px 20px;
       position: relative;
       border-radius: 35px 0 35px 0;
-      
+
       p {
         margin: 0 0 10px;
       }

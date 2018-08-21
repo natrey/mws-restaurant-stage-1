@@ -649,7 +649,7 @@ var DBHelper = function () {
       }).catch(function (error) {
         var errorMsg = 'Request failed. Returned status of ' + error;
         return callback(errorMsg, null);
-      });;
+      });
     }
 
     /**
