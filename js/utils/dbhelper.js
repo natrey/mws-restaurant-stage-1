@@ -1,6 +1,6 @@
 import idb from 'idb';
 
-import { DATABASE, IMAGE } from "./constants";
+import { DATABASE, POST_REVIEW_DATABASE, IMAGE } from "./constants";
 
 /**
  * Common database helper functions.
@@ -33,16 +33,32 @@ export default class DBHelper {
   }
 
   /**
+   * Open Post Review Database
+   */
+  static openPostReviewDatabase() {
+    if (!navigator.serviceWorker) {
+      return Promise.resolve();
+    }
+
+    return idb.open(POST_REVIEW_DATABASE.NAME, POST_REVIEW_DATABASE.VERSION, function(upgradeDb) {
+      const store = upgradeDb.createObjectStore(POST_REVIEW_DATABASE.TABLE, {
+        autoIncrement: true,
+        keyPath: 'id'
+      });
+    });
+  }
+
+  /**
    * Get cached restaurants
    */
   static getCachedRestaurants() {
     return DBHelper.openDatabase().then(function(db) {
       if (!db) return;
 
-      const index = db.transaction(DATABASE.TABLE)
+      const store = db.transaction(DATABASE.TABLE)
         .objectStore(DATABASE.TABLE);
 
-      return index.getAll();
+      return store.getAll();
     });
   }
 
@@ -53,8 +69,9 @@ export default class DBHelper {
     return DBHelper.openDatabase().then(function(db) {
       if (!db) return;
 
-      const tx = db.transaction(DATABASE.TABLE, 'readwrite');
-      const store = tx.objectStore(DATABASE.TABLE);
+      const store = db.transaction(DATABASE.TABLE, 'readwrite')
+        .objectStore(DATABASE.TABLE);
+
       restaurants.forEach(function(restaurant) {
         store.put(restaurant);
       });
@@ -79,10 +96,10 @@ export default class DBHelper {
     return DBHelper.openDatabase().then(function(db) {
       if (!db) return;
 
-      const index = db.transaction(DATABASE.TABLE)
+      const store = db.transaction(DATABASE.TABLE)
         .objectStore(DATABASE.TABLE);
 
-      return index.get(id);
+      return store.get(id);
     });
   }
 
@@ -244,7 +261,6 @@ export default class DBHelper {
     fetch(`${DBHelper.DATABASE_URL}/restaurants/?is_favorite=true`)
       .then(res => res.json())
       .then(restaurants => {
-        console.log(restaurants);
         // this.putCachedRestaurant(restaurant);
 
         // return callback(null, restaurants);
@@ -315,11 +331,67 @@ export default class DBHelper {
         return callback(null, review);
       })
       .catch(error => {
+        if (!navigator.onLine) {
+          this.cacheRestaurantReview(data);
+        }
         const errorMsg = (`Request failed. Returned status of ${error}`);
         return callback(errorMsg, null);
       });
   }
 
+  /**
+   * Cache restaurant review.
+   */
+  static cacheRestaurantReview(data) {
+    DBHelper.openPostReviewDatabase().then(function(db) {
+      if (!db) return;
+
+      const tx = db.transaction(POST_REVIEW_DATABASE.TABLE, 'readwrite');
+      const store = tx.objectStore(POST_REVIEW_DATABASE.TABLE);
+
+      store.put(data);
+
+      return tx.complete;
+    }).then(() => {
+      window.addEventListener('online', this.postCachedRestaurantReview);
+    });
+  }
+
+  /**
+   * Post restaurant review from cache.
+   */
+  static postCachedRestaurantReview() {
+    return DBHelper.openPostReviewDatabase().then(function(db) {
+      if (!db) return;
+
+      const index = db.transaction(POST_REVIEW_DATABASE.TABLE)
+        .objectStore(POST_REVIEW_DATABASE.TABLE);
+
+      return index.getAll();
+    }).then(reviews => {
+      return Promise.all(reviews.map(review => {
+        return fetch(`${DBHelper.DATABASE_URL}/reviews`, {
+          method: 'POST',
+          body: JSON.stringify(review)
+        })
+        .then(res => res.json())
+        .then(review => {
+          window.removeEventListener('online', this.postCachedRestaurantReview);
+
+          DBHelper.openPostReviewDatabase().then(function(db) {
+            if (!db) return;
+
+            const tx = db.transaction(POST_REVIEW_DATABASE.TABLE, 'readwrite');
+            const store =  tx.objectStore(POST_REVIEW_DATABASE.TABLE);
+
+            store.delete(review.id);
+
+            return tx.complete;
+          });
+        });
+      }));
+    });
+  }
 
   /**
    * Restaurant image URL.

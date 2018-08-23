@@ -9,3 +9,9 @@ export const DATABASE = {
   VERSION: 1,
   TABLE: 'restaurants',
 };
+
+export const POST_REVIEW_DATABASE = {
+  NAME: 'restaurant-new-reviews',
+  VERSION: 1,
+  TABLE: 'restaurant-new-reviews',
+};

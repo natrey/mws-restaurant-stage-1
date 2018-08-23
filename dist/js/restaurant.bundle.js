@@ -261,6 +261,12 @@ var DATABASE = exports.DATABASE = {
   TABLE: 'restaurants'
 };
 
+var POST_REVIEW_DATABASE = exports.POST_REVIEW_DATABASE = {
+  NAME: 'restaurant-new-reviews',
+  VERSION: 1,
+  TABLE: 'restaurant-new-reviews'
+};
+
 },{}],3:[function(require,module,exports){
 'use strict';
 
@@ -308,6 +314,25 @@ var DBHelper = function () {
     }
 
     /**
+     * Open Post Review Database
+     */
+
+  }, {
+    key: 'openPostReviewDatabase',
+    value: function openPostReviewDatabase() {
+      if (!navigator.serviceWorker) {
+        return Promise.resolve();
+      }
+
+      return _idb2.default.open(_constants.POST_REVIEW_DATABASE.NAME, _constants.POST_REVIEW_DATABASE.VERSION, function (upgradeDb) {
+        var store = upgradeDb.createObjectStore(_constants.POST_REVIEW_DATABASE.TABLE, {
+          autoIncrement: true,
+          keyPath: 'id'
+        });
+      });
+    }
+
+    /**
      * Get cached restaurants
      */
 
@@ -317,9 +342,9 @@ var DBHelper = function () {
       return DBHelper.openDatabase().then(function (db) {
         if (!db) return;
 
-        var index = db.transaction(_constants.DATABASE.TABLE).objectStore(_constants.DATABASE.TABLE);
+        var store = db.transaction(_constants.DATABASE.TABLE).objectStore(_constants.DATABASE.TABLE);
 
-        return index.getAll();
+        return store.getAll();
       });
     }
 
@@ -333,8 +358,8 @@ var DBHelper = function () {
       return DBHelper.openDatabase().then(function (db) {
         if (!db) return;
 
-        var tx = db.transaction(_constants.DATABASE.TABLE, 'readwrite');
-        var store = tx.objectStore(_constants.DATABASE.TABLE);
+        var store = db.transaction(_constants.DATABASE.TABLE, 'readwrite').objectStore(_constants.DATABASE.TABLE);
+
         restaurants.forEach(function (restaurant) {
           store.put(restaurant);
         });
@@ -363,9 +388,9 @@ var DBHelper = function () {
       return DBHelper.openDatabase().then(function (db) {
         if (!db) return;
 
-        var index = db.transaction(_constants.DATABASE.TABLE).objectStore(_constants.DATABASE.TABLE);
+        var store = db.transaction(_constants.DATABASE.TABLE).objectStore(_constants.DATABASE.TABLE);
 
-        return index.get(id);
+        return store.get(id);
       });
     }
 
@@ -575,7 +600,6 @@ var DBHelper = function () {
       fetch(DBHelper.DATABASE_URL + '/restaurants/?is_favorite=true').then(function (res) {
         return res.json();
       }).then(function (restaurants) {
-        console.log(restaurants);
         // this.putCachedRestaurant(restaurant);
 
         // return callback(null, restaurants);
@@ -647,6 +671,8 @@ var DBHelper = function () {
   }, {
     key: 'postRestaurantReview',
     value: function postRestaurantReview(data, callback) {
+      var _this4 = this;
+
       return fetch(DBHelper.DATABASE_URL + '/reviews', {
         method: 'POST',
         body: JSON.stringify(data)
@@ -656,8 +682,74 @@ var DBHelper = function () {
 
         return callback(null, review);
       }).catch(function (error) {
+        if (!navigator.onLine) {
+          _this4.cacheRestaurantReview(data);
+        }
         var errorMsg = 'Request failed. Returned status of ' + error;
         return callback(errorMsg, null);
+      });
+    }
+
+    /**
+     * Cache restaurant review.
+     */
+
+  }, {
+    key: 'cacheRestaurantReview',
+    value: function cacheRestaurantReview(data) {
+      var _this5 = this;
+
+      DBHelper.openPostReviewDatabase().then(function (db) {
+        if (!db) return;
+
+        var tx = db.transaction(_constants.POST_REVIEW_DATABASE.TABLE, 'readwrite');
+        var store = tx.objectStore(_constants.POST_REVIEW_DATABASE.TABLE);
+
+        store.put(data);
+
+        return tx.complete;
+      }).then(function () {
+        window.addEventListener('online', _this5.postCachedRestaurantReview);
+      });
+    }
+
+    /**
+     * Post restaurant review from cache.
+     */
+
+  }, {
+    key: 'postCachedRestaurantReview',
+    value: function postCachedRestaurantReview() {
+      var _this6 = this;
+
+      return DBHelper.openPostReviewDatabase().then(function (db) {
+        if (!db) return;
+
+        var index = db.transaction(_constants.POST_REVIEW_DATABASE.TABLE).objectStore(_constants.POST_REVIEW_DATABASE.TABLE);
+
+        return index.getAll();
+      }).then(function (reviews) {
+        return Promise.all(reviews.map(function (review) {
+          return fetch(DBHelper.DATABASE_URL + '/reviews', {
+            method: 'POST',
+            body: JSON.stringify(review)
+          }).then(function (res) {
+            return res.json();
+          }).then(function (review) {
+            window.removeEventListener('online', _this6.postCachedRestaurantReview);
+
+            DBHelper.openPostReviewDatabase().then(function (db) {
+              if (!db) return;
+
+              var tx = db.transaction(_constants.POST_REVIEW_DATABASE.TABLE, 'readwrite');
+              var store = tx.objectStore(_constants.POST_REVIEW_DATABASE.TABLE);
+
+              store.delete(review.id);
+
+              return tx.complete;
+            });
+          });
+        }));
       });
     }
 
