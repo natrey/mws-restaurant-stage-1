@@ -140,7 +140,8 @@ var fillReviewsHTML = function fillReviewsHTML() {
   _dbhelper2.default.fetchRestaurantReviews(restaurant.id, function (error, reviews) {
     var container = document.querySelector('.reviews__container');
     var formContainer = document.querySelector('.add-review');
-    var title = document.createElement('h2');
+    var title = document.createElement('h3');
+    title.className = 'reviews__title';
     title.innerHTML = 'Reviews';
     container.insertBefore(title, formContainer);
 
@@ -198,7 +199,7 @@ var createReviewHTML = function createReviewHTML(review) {
  * Add new review
  */
 
-document.querySelector('.add-review-form').addEventListener('submit', function (e) {
+document.querySelector('.add-review__form').addEventListener('submit', function (e) {
   e.preventDefault();
   var formElements = e.target.elements;
 

@@ -25,7 +25,7 @@
       		<div class="map map_fixed" aria-label="location" role="application"></div>
     	</section>
     	<section class="restaurant">
-			<h1 class="restaurant__name"></h1>
+			<h2 class="restaurant__name"></h2>
 			<picture>
 				<source media="(min-width: 768px)" srcset="" sizes="50vw">
 				<img class="restaurant__img" src="" srcset="" alt="">
@@ -37,15 +37,15 @@
     	<section class="reviews__container">
       		<ul class="reviews__list"></ul>
 			<div class="add-review">
-				<h2>Add a review</h2>
-				<form class="add-review-form">
-					<div class="add-review-form__field">
-						<label class="add-review-form__label" for="review-author">Tell us your name:</label>
-						<input id="review-author" class="add-review-form__element" type="text" name="author">
+				<h3 class="add-review__title">Add a review</h3>
+				<form class="add-review__form">
+					<div class="add-review__form-field">
+						<label class="add-review__form-label" for="review-author">Tell us your name:</label>
+						<input id="review-author" class="add-review__form-element" type="text" name="author">
 					</div>
 					<div class="add-review-form__field">
 						<label class="add-review-form__label" for="review-rating">Choose a rating:</label>
-						<select id="review-rating" class="add-review-form__element" name="rating">
+						<select id="review-rating" class="add-review__form-element" name="rating">
 							<option value="1">1</option>
 							<option value="2">2</option>
 							<option value="3">3</option>
@@ -58,12 +58,12 @@
 							<option value="10">10</option>
 						</select>
 					</div>
-					<div class="add-review-form__field">
-						<label class="add-review-form__label" for="review-comments">Leave a comment:</label>
-						<textarea name="comments" class="add-review-form__element" id="review-comments" cols="30" rows="10"></textarea>
+					<div class="add-review__form-field">
+						<label class="add-review__form-label" for="review-comments">Leave a comment:</label>
+						<textarea name="comments" class="add-review__form-element" id="review-comments" cols="30" rows="10"></textarea>
 					</div>
 
-					<button class="add-review-form__button" type="submit">Add a review</button>
+					<button class="add-review__form-button" type="submit">Add a review</button>
 				</form>
 			</div>
     	</section>

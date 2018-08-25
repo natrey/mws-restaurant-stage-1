@@ -7,15 +7,15 @@
     @media (min-width: $tablet-portrait) {
       width: 50%;
     }
+  }
 
-    h2 {
-      color: $orange;
-      font-size: 20pt;
-      font-weight: 300;
-      letter-spacing: -1px;
-      line-height: 1;
-      margin-bottom: 15px;
-    }
+  &__title {
+    color: $orange;
+    font-size: 20pt;
+    font-weight: 300;
+    letter-spacing: -1px;
+    line-height: 1;
+    margin-bottom: 15px;
   }
 
   &__list {

@@ -124,7 +124,8 @@ const fillReviewsHTML = (restaurant = self.restaurant) => {
   DBHelper.fetchRestaurantReviews(restaurant.id, (error, reviews) => {
     const container = document.querySelector('.reviews__container');
     const formContainer = document.querySelector('.add-review');
-    const title = document.createElement('h2');
+    const title = document.createElement('h3');
+    title.className = 'reviews__title';
     title.innerHTML = 'Reviews';
     container.insertBefore(title, formContainer);
 
@@ -182,7 +183,7 @@ const createReviewHTML = (review) => {
  * Add new review
  */
 
-document.querySelector('.add-review-form').addEventListener('submit', e => {
+document.querySelector('.add-review__form').addEventListener('submit', e => {
   e.preventDefault();
   const formElements = e.target.elements;
 

@@ -307,13 +307,14 @@ nav {
   @media (min-width: 768px) {
     .reviews__container {
       width: 50%; } }
-  .reviews__container h2 {
-    color: #b30000;
-    font-size: 20pt;
-    font-weight: 300;
-    letter-spacing: -1px;
-    line-height: 1;
-    margin-bottom: 15px; }
+
+.reviews__title {
+  color: #b30000;
+  font-size: 20pt;
+  font-weight: 300;
+  letter-spacing: -1px;
+  line-height: 1;
+  margin-bottom: 15px; }
 
 .reviews__list {
   margin-bottom: 40px; }
@@ -356,17 +357,22 @@ nav {
   color: #ccc;
   text-shadow: 1px 1px 0 black; }
 
-.add-review-form__field {
+.add-review__title {
+  color: #b30000;
+  font-size: 20pt;
+  font-weight: 300; }
+
+.add-review__form-field {
   margin-bottom: 15px; }
 
-.add-review-form__label {
+.add-review__form-label {
   display: block;
   margin-bottom: 5px; }
 
-.add-review-form__element {
+.add-review__form-element {
   width: 100%; }
 
-.add-review-form__button {
+.add-review__form-button {
   display: block;
   width: 100%;
   background: #b30000;
@@ -379,7 +385,7 @@ nav {
   text-decoration: none;
   text-transform: uppercase; }
   @media (min-width: 768px) {
-    .add-review-form__button {
+    .add-review__form-button {
       display: inline-block; } }
-  .add-review-form__button:hover {
+  .add-review__form-button:hover {
     background: #155B8E; }
