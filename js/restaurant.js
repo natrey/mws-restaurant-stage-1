@@ -198,7 +198,8 @@ document.querySelector('.add-review__form').addEventListener('submit', e => {
     if (error) { // Got an error!
       console.error(error);
     } else {
-      console.log(review);
+      const reviewsList = document.querySelector('.reviews__list');
+      reviewsList.append(createReviewHTML(review));
     }
   });
 });

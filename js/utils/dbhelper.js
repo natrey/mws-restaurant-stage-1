@@ -333,7 +333,7 @@ export default class DBHelper {
       })
       .catch(error => {
         if (!navigator.onLine) {
-          this.cacheRestaurantReview(data);
+          this.cacheRestaurantReview(data, callback);
         }
         const errorMsg = (`Request failed. Returned status of ${error}`);
         return callback(errorMsg, null);
@@ -343,7 +343,7 @@ export default class DBHelper {
   /**
    * Cache restaurant review.
    */
-  static cacheRestaurantReview(data) {
+  static cacheRestaurantReview(data, callback) {
     DBHelper.openPostReviewDatabase().then(function(db) {
       if (!db) return;
 
@@ -354,14 +354,14 @@ export default class DBHelper {
 
       return tx.complete;
     }).then(() => {
-      window.addEventListener('online', this.postCachedRestaurantReview);
+      window.addEventListener('online', this.postCachedRestaurantReview.bind(this, callback));
     });
   }
 
   /**
    * Post restaurant review from cache.
    */
-  static postCachedRestaurantReview() {
+  static postCachedRestaurantReview(callback) {
     return DBHelper.openPostReviewDatabase().then(function(db) {
       if (!db) return;
 
@@ -389,6 +389,8 @@ export default class DBHelper {
 
             return tx.complete;
           });
+
+          return callback(null, review);
         });
       }));
     });

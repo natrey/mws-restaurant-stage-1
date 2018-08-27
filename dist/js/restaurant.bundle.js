@@ -215,7 +215,8 @@ document.querySelector('.add-review__form').addEventListener('submit', function 
       // Got an error!
       console.error(error);
     } else {
-      console.log(review);
+      var reviewsList = document.querySelector('.reviews__list');
+      reviewsList.append(createReviewHTML(review));
     }
   });
 });
@@ -685,7 +686,7 @@ var DBHelper = function () {
         return callback(null, review);
       }).catch(function (error) {
         if (!navigator.onLine) {
-          _this4.cacheRestaurantReview(data);
+          _this4.cacheRestaurantReview(data, callback);
         }
         var errorMsg = 'Request failed. Returned status of ' + error;
         return callback(errorMsg, null);
@@ -698,7 +699,7 @@ var DBHelper = function () {
 
   }, {
     key: 'cacheRestaurantReview',
-    value: function cacheRestaurantReview(data) {
+    value: function cacheRestaurantReview(data, callback) {
       var _this5 = this;
 
       DBHelper.openPostReviewDatabase().then(function (db) {
@@ -711,7 +712,7 @@ var DBHelper = function () {
 
         return tx.complete;
       }).then(function () {
-        window.addEventListener('online', _this5.postCachedRestaurantReview);
+        window.addEventListener('online', _this5.postCachedRestaurantReview.bind(_this5, callback));
       });
     }
 
@@ -721,7 +722,7 @@ var DBHelper = function () {
 
   }, {
     key: 'postCachedRestaurantReview',
-    value: function postCachedRestaurantReview() {
+    value: function postCachedRestaurantReview(callback) {
       var _this6 = this;
 
       return DBHelper.openPostReviewDatabase().then(function (db) {
@@ -750,6 +751,8 @@ var DBHelper = function () {
 
               return tx.complete;
             });
+
+            return callback(null, review);
           });
         }));
       });
