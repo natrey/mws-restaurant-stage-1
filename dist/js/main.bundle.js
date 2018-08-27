@@ -386,7 +386,7 @@ var DBHelper = function () {
     key: 'getRestaurants',
     value: function getRestaurants(callback) {
       return DBHelper.getCachedRestaurants().then(function (restaurants) {
-        return !!restaurants.length ? callback(null, restaurants) : DBHelper.fetchRestaurants(callback);
+        return window.navigator.onLine ? DBHelper.fetchRestaurants(callback) : callback(null, restaurants);
       });
     }
 

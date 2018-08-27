@@ -83,9 +83,9 @@ export default class DBHelper {
    */
   static getRestaurants(callback) {
     return DBHelper.getCachedRestaurants().then(restaurants => {
-      return !!restaurants.length
-        ? callback(null, restaurants)
-        : DBHelper.fetchRestaurants(callback);
+      return window.navigator.onLine
+        ? DBHelper.fetchRestaurants(callback)
+        : callback(null, restaurants);
     });
   }
 
