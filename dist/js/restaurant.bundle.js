@@ -391,7 +391,7 @@ var DBHelper = function () {
 
         var store = db.transaction(_constants.DATABASE.TABLE).objectStore(_constants.DATABASE.TABLE);
 
-        return store.get(id);
+        return store.get(+id);
       });
     }
 
@@ -422,7 +422,8 @@ var DBHelper = function () {
     key: 'getRestaurantById',
     value: function getRestaurantById(id, callback) {
       return DBHelper.getCachedRestaurant(id).then(function (restaurant) {
-        return !!restaurant ? callback(null, restaurant) : DBHelper.fetchRestaurantById(id, callback);
+
+        return window.navigator.onLine ? DBHelper.fetchRestaurantById(id, callback) : callback(null, restaurant);
       });
     }
 

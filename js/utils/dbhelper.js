@@ -99,7 +99,7 @@ export default class DBHelper {
       const store = db.transaction(DATABASE.TABLE)
         .objectStore(DATABASE.TABLE);
 
-      return store.get(id);
+      return store.get(+id);
     });
   }
 
@@ -124,9 +124,10 @@ export default class DBHelper {
    */
   static getRestaurantById(id, callback) {
     return DBHelper.getCachedRestaurant(id).then(restaurant => {
-      return !!restaurant
-        ? callback(null, restaurant)
-        : DBHelper.fetchRestaurantById(id, callback);
+
+      return window.navigator.onLine
+        ? DBHelper.fetchRestaurantById(id, callback)
+        : callback(null, restaurant);
     });
   }
 
